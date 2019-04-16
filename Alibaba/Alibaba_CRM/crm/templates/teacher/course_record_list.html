@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div style="margin: 10px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">课程记录展示</h3>
+            </div>
+            <div class="panel-body">
+
+                {#添加功能选项,使用form表单将选择的[客户id/功能]提交给后端处理#}
+                <form action="" method="post" class="form-inline">
+                    {% csrf_token %}
+
+                    <div style="margin-bottom: 5px">
+                        <select name="action" id="" class="form-control">
+                            <option value="">选择功能</option>
+                            <option value="multi_init">批量初始化记录</option>
+                            <option value="multi_delete">批量删除</option>
+                        </select>
+                        <button class="btn btn-primary">功能提交</button>
+                        {#后端传过来的class_id#}
+                        <a class="btn btn-primary" href="{% url 'course_record_add' class_id %}">添加课程记录</a>
+                    </div>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>选择</th>
+                            <th>序号</th>
+                            <th>课程名称</th>
+                            <th>节次</th>
+                            <th>上课日期</th>
+                            <th>是否有作业</th>
+                            <th>作业名称</th>
+                            <th>班主任</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for record in all_records %}
+                            <tr>
+                                <td><input type="checkbox" name="id" value="{{ record.pk }}"></td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>
+                                    <a href="{% url 'study_record_list' record.pk %}">{{ record.course_title }}</a>
+                                </td>
+                                <td>{{ record.day_num }}</td>
+                                <td>{{ record.date }}</td>
+                                <td>{{ record.has_homework }}</td>
+                                <td>{{ record.homework_title }}</td>
+                                <td>{{ record.teacher }}</td>
+                                <td><a href="{% url 'course_record_edit' record.pk %}"><i
+                                        class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                                {#上边是之前使用官方反向解析;现在使用自定义反向解析#}
+                                {#                                {% load url %}#}
+                                {#                                <td><a href="{% reverse_url request 'consult_edit' consult.pk %}"><i#}
+                                {#                                        class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>#}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </form>
+
+                <nav class="container" aria-label="Page navigation">
+                    <ul class="pagination">
+                        {#方式一:由前端处理分页迭代#}
+                        {#            {% for num in page_num %}#}
+                        {#                <li><a href="?page={{ num }}">{{ num }}</a></li>#}
+                        {#            {% endfor %}#}
+                        {#方式二:由后端处理分页迭代#}
+                        {{ page_html|safe }}
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}

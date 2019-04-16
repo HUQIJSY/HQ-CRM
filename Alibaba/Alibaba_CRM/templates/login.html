@@ -1,0 +1,67 @@
+{#引入静态文件别名#}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CRM_login</title>
+    <meta name="description" content="particles.js is a lightweight JavaScript library for creating particles.">
+    <meta name="author" content="Vincent Garreau"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" media="screen" href={% static "css/style.css" %}>
+    <link rel="stylesheet" type="text/css" href={% static "css/reset.css" %}/>
+</head>
+<body>
+<div id="particles-js">
+    <div class="login">
+        <div class="login-top">
+            登录
+        </div>
+        <div class="login-center clearfix">
+            <div class="login-center-img"><img src={% static "images/name.png" %}/></div>
+            <div class="login-center-input">
+                <input type="text" name="user" value="" placeholder="请输入您的用户名" onfocus="this.placeholder=''"
+                       onblur="this.placeholder='请输入您的用户名'"/>
+                <div class="login-center-input-text">用户名</div>
+            </div>
+        </div>
+        <div class="login-center clearfix">
+            <div class="login-center-img"><img src={% static "images/password.png" %}/></div>
+            <div class="login-center-input">
+                <input type="password" name="pwd" value="" placeholder="请输入您的密码" onfocus="this.placeholder=''"
+                       onblur="this.placeholder='请输入您的密码'"/>
+                <div class="login-center-input-text">密码</div>
+            </div>
+        </div>
+        <p id="err" style="text-align: center"></p>
+        <div style="text-align: center">
+            <button class="login-button" id="btn" type="button">登录</button>
+        </div>
+    </div>
+</div>
+
+<!-- scripts -->
+<script src="{% static "plugins/jquery-3.3.1.js" %}"></script>
+<script src={% static "js/particles.min.js" %}></script>
+<script src={% static "js/app.js" %}></script>
+<script src="{% static 'js/ajax_setup.js' %}"></script>
+<script>
+    $('#btn').click(function () {
+        $.ajax({
+            url: '/login/',
+            type: 'post',
+            data: {
+                user: $("[name='user']").val(),
+                pwd: $("[name='pwd']").val()
+            },
+            success: function (res) {
+                $('#err').text(res);
+                location.href = res.jump_addr;
+
+            },
+        })
+    })
+</script>
+</body>
+</html>

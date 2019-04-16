@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div style="margin: 10px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">学习记录展示</h3>
+            </div>
+            <div class="panel-body">
+
+                {#添加功能选项,使用form表单将选择的[客户id/功能]提交给后端处理#}
+                <form action="" method="post" class="form-inline">
+                    {% csrf_token %}
+                    {# 下面这句不写会报错-['ManagementForm data is missing or has been tampered with']#}
+                    {{ form_obj.management_form }}
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>学生</th>
+                            <th>考勤</th>
+                            <th>成绩</th>
+                            <th>作业批语</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for form in form_obj %}
+                            <tr>
+{#                            "'form-0-id'"#}
+                                {{ form.id }}
+                                <td>{{ forloop.counter }}</td>
+{#                                可以获取到查看的当前学生,就不用再次选择了和form一样有instance获取源数据#}
+                                <td>{{ form.instance.student }}</td>
+                                <td>{{ form.attendance }}</td>
+                                <td>{{ form.score }}</td>
+                                <td>{{ form.homework_note }}</td>
+{#                                底下course_record/student是必填项,所以得写上,否则页面提交不了保存不了修改的数据#}
+{#                                可以使用bootstrap hide类给隐藏掉#}
+                                <td class="hide">{{ form.course_record}}</td>
+                                <td class="hide">{{ form.student}}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                <button class="btn btn-primary">保存</button>
+                </form>
+{#            由于之前提交不了数据,排查有哪些错误#}
+{#            {{ form_obj.errors }}#}
+            </div>
+        </div>
+    </div>
+{% endblock %}

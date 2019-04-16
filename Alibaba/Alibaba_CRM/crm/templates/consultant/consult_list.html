@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div style="margin: 10px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">跟进记录展示</h3>
+            </div>
+            <div class="panel-body">
+                {#模糊查询(走GET请求就行)#}
+                <form class="form-inline pull-right" action="">
+                    <input type="text" class="form-control" name="query">
+                    <button class="btn btn-primary">搜索</button>
+                </form>
+                {#添加功能选项,使用form表单将选择的[客户id/功能]提交给后端处理#}
+                <form action="" method="post" class="form-inline">
+                    {% csrf_token %}
+                    <a class="btn btn-primary" href="{% url 'consult_add' %}">添加客户</a>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr>
+                            <th>选择</th>
+                            <th>序号</th>
+                            <th>客户</th>
+                            <th>跟进内容</th>
+                            <th>跟进状态</th>
+                            <th>跟进人</th>
+                            <th>跟进日期</th>
+                            <th>编辑</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for consult in consult_objs %}
+                            <tr>
+                                <td><input type="checkbox" name="id" value="{{ consult.pk }}"></td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ consult.customer }}</td>
+                                <td>{{ consult.note }}</td>
+                                <td>{{ consult.show_status|safe }}</td>
+                                <td>{{ consult.consultant }}</td>
+                                <td>{{ consult.date }}</td>
+                                <td><a href="{% url 'consult_edit' consult.pk %}"><i
+                                      class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>
+                                {#上边是之前使用官方反向解析;现在使用自定义反向解析#}
+{#                                {% load url %}#}
+{#                                <td><a href="{% reverse_url request 'consult_edit' consult.pk %}"><i#}
+{#                                        class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a></td>#}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </form>
+
+                <nav class="container" aria-label="Page navigation">
+                    <ul class="pagination">
+                        {#方式一:由前端处理分页迭代#}
+                        {#            {% for num in page_num %}#}
+                        {#                <li><a href="?page={{ num }}">{{ num }}</a></li>#}
+                        {#            {% endfor %}#}
+                        {#方式二:由后端处理分页迭代#}
+                        {{ page_html|safe }}
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
